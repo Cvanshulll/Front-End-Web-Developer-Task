@@ -1,6 +1,6 @@
 import { Avatar, Card, CardContent, CardHeader, CircularProgress, Grid, Typography } from "@mui/material";
 import axios from "axios";
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 
 const Notes = () => {
 
@@ -10,7 +10,6 @@ const Notes = () => {
     useEffect(() => {
         axios.get("https://api.gyanibooks.com/library/get_dummy_notes")
             .then((response) => {
-                console.log(response.data);
                 setData(response.data);
                 setIsLoading(false);
             })
@@ -62,27 +61,42 @@ const Notes = () => {
             ) : (
                 <Grid container spacing={2}>
                     {data.map((item, id) => (
-                        <Grid item xs={12} sm={6} md={4} lg={3}>
-                            {/* <Typography variant="p">ID: {item.id}</Typography> */}
-                            <Card key={id}>
+                        <Grid item xs={12} sm={6} md={4} lg={3} sx={{py: 4}}>
+                            <Card key={id} className="card" >
                                 <CardHeader
                                     avatar={
-                                        <Avatar aria-label="user" className="avatar">
+                                        <Avatar aria-label="user" sx={{border: "1.8px solid black", color:"black", bgcolor: "#FBFBFB"}}>
                                             {item.user}
                                         </Avatar>
                                     }
-                                    // action={
-                                    //     <IconButton aria-label="settings">
-                                    //         <MoreVertIcon />
-                                    //     </IconButton>
-                                    // }
                                     title={
                                         <Typography variant="h6" className="title">{item.title}</Typography>
                                     }
                                     subheader={`ID: ${item.id}`}
                                 />
-                                <Typography variant="p">Content: {parseNotesContent(item.content)}</Typography>
-
+                                <hr/>
+                                <CardContent className="card-content" sx={{px: 3}}>
+                                    <details>
+                                        <summary>Notes</summary>
+                                        <p>
+                                    <Typography variant="body2" color="text.secondary">
+                                        <ul>
+                                            {parseNotesContent(item.notes)?.map((note, index) => (
+                                                <li
+                                                    key={index}
+                                                    style={{
+                                                        color: note.textColor !== 'default' ? note.textColor : undefined,
+                                                        backgroundColor: note.backgroundColor !== 'default' ? note.backgroundColor : undefined,
+                                                    }}
+                                                >
+                                                    {note.text}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </Typography>
+                                    </p>
+                                    </details>
+                                </CardContent>
                             </Card>
                         </Grid>
                     ))}
